@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SyniX Hub</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: #121212;
+      color: #fff;
+      line-height: 1.6;
+    }
+
+    header {
+      background-color: #1f1f1f;
+      padding: 20px;
+      text-align: center;
+      border-bottom: 2px solid #2c2c2c;
+    }
+
+    header h1 {
+      font-size: 2.5em;
+      color: #00ffff;
+      letter-spacing: 2px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .section-title {
+      font-size: 1.8em;
+      margin-bottom: 20px;
+      border-left: 5px solid #00ffff;
+      padding-left: 10px;
+    }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .game-card {
+      background-color: #1e1e1e;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .game-card:hover {
+      transform: scale(1.03);
+    }
+
+    .game-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+    }
+
+    .game-info {
+      padding: 15px;
+    }
+
+    .game-info h3 {
+      color: #00ffff;
+      margin-bottom: 10px;
+    }
+
+    .game-info p {
+      font-size: 0.95em;
+      color: #ccc;
+    }
+
+    .game-info button {
+      margin-top: 10px;
+      padding: 10px 15px;
+      background-color: #00ffff;
+      color: #000;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .random-stuff {
+      margin-top: 50px;
+    }
+
+    .random-item {
+      background-color: #1e1e1e;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-left: 4px solid #00ffff;
+      border-radius: 5px;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 2em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>SyniX Hub</h1>
+  </header>
+
+  <div class="container">
+    <section>
+      <h2 class="section-title">Jogos em Destaque</h2>
+      <div class="game-grid">
+        <div class="game-card">
+          <img src="https://placehold.co/400x200/png?text=Cyber+Runner" alt="Cyber Runner" />
+          <div class="game-info">
+            <h3>Cyber Runner</h3>
+            <p>Corra por um mundo neon futurista cheio de perigos e recompensas.</p>
+            <button>Jogar</button>
+          </div>
+        </div>
+
+        <div class="game-card">
+          <img src="https://placehold.co/400x200/png?text=Pixel+Raiders" alt="Pixel Raiders" />
+          <div class="game-info">
+            <h3>Pixel Raiders</h3>
+            <p>Defenda sua base em combates pixelados frenéticos e viciantes!</p>
+            <button>Jogar</button>
+          </div>
+        </div>
+
+        <div class="game-card">
+          <img src="https://placehold.co/400x200/png?text=Void+Wanderers" alt="Void Wanderers" />
+          <div class="game-info">
+            <h3>Void Wanderers</h3>
+            <p>Explore o desconhecido, forme alianças e lute entre galáxias distantes.</p>
+            <button>Jogar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="random-stuff">
+      <h2 class="section-title">Coisas Aleatórias que Fazem Sentido</h2>
+      <div class="random-item">🧠 *"Às vezes, o melhor power-up é pausar o jogo e respirar."*</div>
+      <div class="random-item">🎮 Recomendação aleatória: <strong>Jogue com fones e luz apagada</strong> pra curtir mais a imersão.</div>
+      <div class="random-item">🔮 "A curiosidade é o mapa secreto dos melhores mundos abertos."</div>
+    </section>
+  </div>
+
+</body>
+  </html>

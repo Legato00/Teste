@@ -1,161 +1,123 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SyniX Hub</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
+import React, { useMemo, useState } from "react"; import { Gamepad2, Download, Search, Star, ShieldCheck, Sparkles, Tag, Globe2 } from "lucide-react"; import { Button } from "@/components/ui/button"; import { Input } from "@/components/ui/input"; import { Badge } from "@/components/ui/badge"; import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-    body {
-      background-color: #121212;
-      color: #fff;
-      line-height: 1.6;
-    }
+// ———————————————————————————————————————————————— // SyniX Hub — landing page (React + Tailwind + shadcn) // Single-file, responsive, accessible, and ready for GitHub Pages // Replace dummy data below with your real games/APKs. // ————————————————————————————————————————————————
 
-    header {
-      background-color: #1f1f1f;
-      padding: 20px;
-      text-align: center;
-      border-bottom: 2px solid #2c2c2c;
-    }
+const GAMES = [ { id: "minecraft", title: "Minecraft", category: "Caixa de areia", rating: 4.9, version: "1.21.0", size: "162 MB", updatedAt: "2025-07-28", verified: true, langs: ["pt-BR", "en"], url: "#", color: "from-emerald-500 to-teal-600", coverEmoji: "🧱", }, { id: "terraria", title: "Terraria", category: "Sobrevivência", rating: 4.8, version: "1.4.5", size: "120 MB", updatedAt: "2025-07-20", verified: true, langs: ["pt-BR", "en"], url: "#", color: "from-purple-600 to-fuchsia-600", coverEmoji: "⛏️", }, { id: "stumble", title: "Stumble Guys", category: "Ação", rating: 4.5, version: "0.70", size: "98 MB", updatedAt: "2025-06-30", verified: true, langs: ["pt-BR"], url: "#", color: "from-amber-500 to-orange-600", coverEmoji: "🤸", }, { id: "freefire", title: "Free Fire", category: "Battle Royale", rating: 4.4, version: "2.120", size: "830 MB", updatedAt: "2025-07-02", verified: false, langs: ["pt-BR"], url: "#", color: "from-sky-600 to-blue-700", coverEmoji: "🎯", }, { id: "gta", title: "GTA: SA", category: "Mundo aberto", rating: 4.7, version: "2.10", size: "2.3 GB", updatedAt: "2025-07-11", verified: true, langs: ["pt-BR", "en"], url: "#", color: "from-zinc-700 to-neutral-800", coverEmoji: "🚗", }, { id: "hollow", title: "Hollow Knight", category: "Metroidvania", rating: 4.9, version: "1.5", size: "1.1 GB", updatedAt: "2025-07-01", verified: true, langs: ["en"], url: "#", color: "from-indigo-600 to-blue-800", coverEmoji: "🦋", }, ];
 
-    header h1 {
-      font-size: 2.5em;
-      color: #00ffff;
-      letter-spacing: 2px;
-    }
+const CATEGORIES = [ "Todos", "Caixa de areia", "Sobrevivência", "Ação", "Battle Royale", "RPG", "Metroidvania", "Mundo aberto", ];
 
-    .container {
-      max-width: 1200px;
-      margin: 30px auto;
-      padding: 0 20px;
-    }
+function Pill({ icon: Icon, children }: any) { return ( <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-zinc-200"> {Icon && <Icon className="h-4 w-4" aria-hidden />} <span>{children}</span> </div> ); }
 
-    .section-title {
-      font-size: 1.8em;
-      margin-bottom: 20px;
-      border-left: 5px solid #00ffff;
-      padding-left: 10px;
-    }
+function GameCard({ game }: { game: (typeof GAMES)[number] }) { return ( <Card className="group overflow-hidden border-white/10 bg-gradient-to-b from-zinc-900 to-black/60 backdrop-blur"> <CardHeader className="p-0"> <div className={relative h-40 w-full overflow-hidden bg-gradient-to-br ${game.color}} aria-label={Capa do jogo ${game.title}} > <div className="absolute inset-0 opacity-20 bg-[radial-gradient(ellipse_at_top,white,transparent_60%)]" /> <div className="absolute right-3 top-3 flex gap-1"> {game.verified && ( <Badge variant="secondary" className="bg-emerald-600/90 text-white"> <ShieldCheck className="mr-1 h-3 w-3" /> Verificado </Badge> )} </div> <div className="flex h-full items-center justify-center text-6xl">{game.coverEmoji}</div> </div> </CardHeader> <CardContent className="space-y-3 p-4"> <div className="flex items-start justify-between gap-3"> <CardTitle className="text-lg text-white">{game.title}</CardTitle> <div className="flex items-center gap-1 text-amber-400" aria-label={Nota ${game.rating}}> <Star className="h-4 w-4 fill-current" /> <span className="text-sm">{game.rating}</span> </div> </div> <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-300"> <Pill icon={Tag}>{game.category}</Pill> <Pill icon={Globe2}>{game.langs.join(" • ")}</Pill> <Pill icon={null}>v{game.version}</Pill> <Pill icon={null}>{game.size}</Pill> </div> <div className="flex items-center justify-between pt-1"> <span className="text-[11px] text-zinc-400">Atualizado {new Date(game.updatedAt).toLocaleDateString("pt-BR")}</span> <Button size="sm" className="gap-2"> <Download className="h-4 w-4" /> Baixar </Button> </div> </CardContent> </Card> ); }
 
-    .game-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-    }
+export default function SynixHubApp() { const [query, setQuery] = useState(""); const [category, setCategory] = useState("Todos"); const [sort, setSort] = useState("destaque");
 
-    .game-card {
-      background-color: #1e1e1e;
-      border-radius: 10px;
-      overflow: hidden;
-      transition: transform 0.3s ease;
-    }
+const filtered = useMemo(() => { let data = GAMES.filter((g) => [g.title, g.category].join(" ").toLowerCase().includes(query.toLowerCase()) ); if (category !== "Todos") data = data.filter((g) => g.category === category); if (sort === "recentes") data = [...data].sort((a, b) => +new Date(b.updatedAt) - +new Date(a.updatedAt)); if (sort === "nota") data = [...data].sort((a, b) => b.rating - a.rating); return data; }, [query, category, sort]);
 
-    .game-card:hover {
-      transform: scale(1.03);
-    }
+return ( <div className="min-h-screen bg-[#0B0B0F] text-zinc-200"> {/* NAVBAR */} <header className="sticky top-0 z-50 border-b border-white/10 bg-black/40 backdrop-blur"> <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3"> <div className="flex items-center gap-3"> <div className="grid h-9 w-9 place-items-center rounded-xl bg-violet-600 shadow-lg shadow-violet-600/30"> <Gamepad2 className="h-5 w-5 text-white" /> </div> <div> <p className="text-xs uppercase tracking-widest text-zinc-400">SyniX Hub</p> <h1 className="text-lg font-semibold text-white">Compartilhamento de jogos</h1> </div> </div>
 
-    .game-card img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-    }
-
-    .game-info {
-      padding: 15px;
-    }
-
-    .game-info h3 {
-      color: #00ffff;
-      margin-bottom: 10px;
-    }
-
-    .game-info p {
-      font-size: 0.95em;
-      color: #ccc;
-    }
-
-    .game-info button {
-      margin-top: 10px;
-      padding: 10px 15px;
-      background-color: #00ffff;
-      color: #000;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-
-    .random-stuff {
-      margin-top: 50px;
-    }
-
-    .random-item {
-      background-color: #1e1e1e;
-      padding: 20px;
-      margin-bottom: 15px;
-      border-left: 4px solid #00ffff;
-      border-radius: 5px;
-    }
-
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 2em;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <header>
-    <h1>SyniX Hub</h1>
+<div className="hidden items-center gap-2 md:flex">
+        <Badge className="bg-emerald-600/20 text-emerald-300">Hashes publicados</Badge>
+        <Badge className="bg-zinc-700/40 text-zinc-200">Sem anúncios agressivos</Badge>
+      </div>
+    </div>
   </header>
 
-  <div class="container">
-    <section>
-      <h2 class="section-title">Jogos em Destaque</h2>
-      <div class="game-grid">
-        <div class="game-card">
-          <img src="https://placehold.co/400x200/png?text=Cyber+Runner" alt="Cyber Runner" />
-          <div class="game-info">
-            <h3>Cyber Runner</h3>
-            <p>Corra por um mundo neon futurista cheio de perigos e recompensas.</p>
-            <button>Jogar</button>
+  {/* HERO */}
+  <section className="relative border-b border-white/10">
+    <div className="absolute inset-0 -z-10 bg-[radial-gradient(60%_60%_at_50%_0%,rgba(139,92,246,.25),transparent)]" />
+    <div className="mx-auto max-w-7xl px-4 py-10">
+      <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-violet-600/20 via-indigo-600/10 to-fuchsia-600/10 p-6 md:p-10">
+        <div className="max-w-3xl space-y-4">
+          <h2 className="text-3xl font-extrabold leading-tight text-white md:text-5xl">
+            O Universo das Descobertas
+          </h2>
+          <p className="text-lg text-zinc-300">
+            Explore recomendações, encontre APKs e mergulhe em novas aventuras selecionadas pela comunidade.
+          </p>
+          <div className="flex flex-col gap-3 md:flex-row md:items-center">
+            <div className="relative w-full md:w-96">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+              <Input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Buscar jogo, gênero ou versão..."
+                className="pl-9"
+                aria-label="Buscar jogos"
+              />
+            </div>
+            <Tabs value={sort} onValueChange={setSort} className="md:ml-2">
+              <TabsList className="grid grid-cols-3">
+                <TabsTrigger value="destaque">Destaque</TabsTrigger>
+                <TabsTrigger value="recentes">Recentes</TabsTrigger>
+                <TabsTrigger value="nota">Melhor nota</TabsTrigger>
+              </TabsList>
+            </Tabs>
           </div>
-        </div>
 
-        <div class="game-card">
-          <img src="https://placehold.co/400x200/png?text=Pixel+Raiders" alt="Pixel Raiders" />
-          <div class="game-info">
-            <h3>Pixel Raiders</h3>
-            <p>Defenda sua base em combates pixelados frenéticos e viciantes!</p>
-            <button>Jogar</button>
+          <div className="flex flex-wrap gap-2 pt-1">
+            {CATEGORIES.map((c) => (
+              <button
+                key={c}
+                onClick={() => setCategory(c)}
+                className={`rounded-full border px-3 py-1 text-sm transition ${
+                  c === category
+                    ? "border-violet-500 bg-violet-600/20 text-violet-200"
+                    : "border-white/10 bg-white/5 text-zinc-300 hover:bg-white/10"
+                }`}
+                aria-pressed={c === category}
+              >
+                {c}
+              </button>
+            ))}
           </div>
-        </div>
 
-        <div class="game-card">
-          <img src="https://placehold.co/400x200/png?text=Void+Wanderers" alt="Void Wanderers" />
-          <div class="game-info">
-            <h3>Void Wanderers</h3>
-            <p>Explore o desconhecido, forme alianças e lute entre galáxias distantes.</p>
-            <button>Jogar</button>
+          <div className="flex items-center gap-3 pt-4 text-sm text-zinc-400">
+            <Pill icon={ShieldCheck}>Arquivos verificados quando possível</Pill>
+            <Pill icon={Sparkles}>Sugestões da comunidade</Pill>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="random-stuff">
-      <h2 class="section-title">Coisas Aleatórias que Fazem Sentido</h2>
-      <div class="random-item">🧠 *"Às vezes, o melhor power-up é pausar o jogo e respirar."*</div>
-      <div class="random-item">🎮 Recomendação aleatória: <strong>Jogue com fones e luz apagada</strong> pra curtir mais a imersão.</div>
-      <div class="random-item">🔮 "A curiosidade é o mapa secreto dos melhores mundos abertos."</div>
-    </section>
-  </div>
+  {/* FEATURED GRID */}
+  <main className="mx-auto max-w-7xl px-4 py-10">
+    <h3 className="mb-4 text-2xl font-bold text-white md:text-3xl">Jogos em Destaque</h3>
+    {filtered.length === 0 ? (
+      <div className="grid place-items-center rounded-2xl border border-white/10 bg-white/5 p-12 text-center text-zinc-400">
+        Nada encontrado. Tente outro termo ou categoria.
+      </div>
+    ) : (
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {filtered.map((g) => (
+          <GameCard key={g.id} game={g} />
+        ))}
+      </div>
+    )}
+  </main>
 
-</body>
-  </html>
+  {/* FOOTER */}
+  <footer className="mt-10 border-t border-white/10 bg-black/30 py-10">
+    <div className="mx-auto max-w-7xl px-4">
+      <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
+        <div className="space-y-1">
+          <p className="text-sm text-zinc-400">© {new Date().getFullYear()} SyniX Hub. Comunidade de jogos.</p>
+          <p className="text-xs text-zinc-500">Ao enviar um APK você confirma que tem permissão para distribuí-lo.</p>
+        </div>
+        <div className="flex flex-wrap gap-2 text-xs text-zinc-400">
+          <a href="#" className="hover:text-zinc-200">Termos</a>
+          <span>•</span>
+          <a href="#" className="hover:text-zinc-200">Privacidade</a>
+          <span>•</span>
+          <a href="#" className="hover:text-zinc-200">DMCA</a>
+          <span>•</span>
+          <a href="#" className="hover:text-zinc-200">Contato</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+); }
+
